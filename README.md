@@ -2,6 +2,7 @@
 
 [![CI](https://github.com/Ntmib/skill-guide/actions/workflows/ci.yml/badge.svg)](https://github.com/Ntmib/skill-guide/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-informational.svg)](LICENSE)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 Локальный справочник **всех скиллов и `/`-команд** твоего Claude Code и Codex.
 Разложены по категориям, на простом русском, с бейджами платформы, GitHub-источниками
@@ -177,6 +178,7 @@ Skill-Guide/
 Самое ценное — **русские описания скиллов**: «что делает», «когда» и «как применять».
 Автосканер находит скиллы сам, но красивый текст пишут люди. Добавить/поправить легко —
 всё живёт в одном файле [`data/overrides.json`](data/overrides.json), код трогать не нужно.
+Полный гайд — в [CONTRIBUTING.md](CONTRIBUTING.md).
 
 **Как добавить описание:**
 
