@@ -1,0 +1,12 @@
+{
+  "_comment": "Результат проверки GitHub-источников (WebFetch). Ключ — URL репозитория, ok=true если репо реально существует и это правильный проект. Проверено 2026-08-04.",
+  "verified": "2026-08-04",
+  "urls": {
+    "https://github.com/garrytan/gstack": { "ok": true, "note": "gstack — 23 Claude Code skills (роли команды)" },
+    "https://github.com/vercel/vercel-plugin": { "ok": true, "note": "Vercel-плагин для Claude Code (исправлено: раньше вело на Anthropic)" },
+    "https://github.com/obra/superpowers": { "ok": true, "note": "superpowers — фреймворк агентных скиллов" },
+    "https://github.com/anthropics/skills": { "ok": true, "note": "anthropic-skills — docx/pptx/xlsx/pdf лежат в skills/<name>" },
+    "https://github.com/openai/codex-plugin-cc": { "ok": true, "note": "codex-плагин — делегирование задач в Codex" },
+    "https://github.com/anthropics/claude-plugins-official": { "ok": true, "note": "официальная витрина плагинов Anthropic" }
+  }
+}

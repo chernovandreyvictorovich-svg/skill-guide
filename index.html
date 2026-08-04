@@ -1,0 +1,694 @@
+<!doctype html>
+<html lang="ru" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Skill-Guide · твои скиллы и /команды</title>
+<link rel="stylesheet" href="assets/fonts.css">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CjxyZWN0IHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIgcng9IjciIGZpbGw9IiMyNjQwOEIiLz4KPHJlY3QgeD0iMi41IiB5PSIyLjUiIHdpZHRoPSIyNyIgaGVpZ2h0PSIyNyIgcng9IjUuNSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjRjNFRUUzIiBzdHJva2Utb3BhY2l0eT0iMC4yMiIvPgo8dGV4dCB4PSIxNiIgeT0iMjMuNSIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsJ1RpbWVzIE5ldyBSb21hbicsc2VyaWYiIGZvbnQtc2l6ZT0iMjMiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiNGM0VFRTMiIHRleHQtYW5jaG9yPSJtaWRkbGUiPlM8L3RleHQ+CjxjaXJjbGUgY3g9IjI0LjUiIGN5PSI4IiByPSIyLjQiIGZpbGw9IiNDOThBOTMiLz4KPC9zdmc+">
+<style>
+  /* Издательский стиль: кремовая бумага, чернила-синь, бордо; Lora + Manrope */
+  :root {
+    --bg: #F3EEE3; --surface: #FBF8F1; --surface-2: #F0E9DB; --ink: #211E19;
+    --muted: #6B6357; --faint: #9C947F; --line: #E2DACA; --accent: #26408B;
+    --accent-soft: #DFE4F2; --olive: #5E7A54; --olive-soft: #E2E8D8;
+    --codex: #8A3A46; --codex-soft: #F1E0E2;
+    --shadow: 0 1px 2px rgba(34,31,26,.05), 0 6px 20px rgba(34,31,26,.05);
+    --mono: "JetBrains Mono", ui-monospace, "SF Mono", "Menlo", "Consolas", monospace;
+    --sans: "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --serif: "Lora", Georgia, "Times New Roman", serif;
+  }
+  /* Светлая — тема по умолчанию. Тёмная включается только явно ([data-theme="dark"]),
+     на онлайн-версии — переключателем темы. Авто-переключение по системе отключено. */
+  :root[data-theme="dark"] {
+    --bg: #1B1813; --surface: #232019; --surface-2: #2A2620; --ink: #ECE5D6;
+    --muted: #ADA48D; --faint: #857B67; --line: #372F25; --accent: #93A8E6;
+    --accent-soft: #262C3B; --olive: #A0B67F; --olive-soft: #262B1E;
+    --codex: #DB94A0; --codex-soft: #382026;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.26);
+  }
+  :root[data-theme="light"] {
+    --bg: #F3EEE3; --surface: #FBF8F1; --surface-2: #F0E9DB; --ink: #211E19;
+    --muted: #6B6357; --faint: #9C947F; --line: #E2DACA; --accent: #26408B;
+    --accent-soft: #DFE4F2; --olive: #5E7A54; --olive-soft: #E2E8D8;
+    --codex: #8A3A46; --codex-soft: #F1E0E2;
+    --shadow: 0 1px 2px rgba(34,31,26,.05), 0 6px 20px rgba(34,31,26,.05);
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: var(--sans); line-height: 1.5; -webkit-font-smoothing: antialiased;
+  }
+  .mono { font-family: var(--mono); }
+  a { color: inherit; }
+
+  /* ---------- header ---------- */
+  header {
+    position: sticky; top: 0; z-index: 30;
+    background: color-mix(in srgb, var(--bg) 93%, transparent);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--line);
+  }
+  .head-inner { max-width: 1200px; margin: 0 auto; padding: 18px 22px 14px; }
+  .brand {
+    font-family: var(--sans); font-size: 11.5px; letter-spacing: .2em;
+    text-transform: uppercase; color: var(--accent); font-weight: 600;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .brand::after { content: ""; flex: 0 0 34px; height: 1px; background: var(--accent); opacity: .5; }
+  h1 {
+    font-family: var(--serif); font-size: clamp(26px, 4vw, 38px);
+    margin: 8px 0 4px; font-weight: 600; letter-spacing: -.01em; line-height: 1.1; text-wrap: balance;
+  }
+  .sub { color: var(--muted); font-size: 14.5px; line-height: 1.55; margin: 0 0 16px; max-width: 64ch; }
+
+  .search-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .search { flex: 1 1 280px; position: relative; }
+  .search input {
+    width: 100%; font-size: 15px; font-family: var(--sans);
+    padding: 12px 36px 12px 38px; background: var(--surface); color: var(--ink);
+    border: 1px solid var(--line); border-radius: 10px; box-shadow: var(--shadow);
+  }
+  .search input:focus { outline: 2px solid var(--accent); outline-offset: 1px; border-color: transparent; }
+  .search input::placeholder { color: var(--faint); }
+  .search .ic { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); color: var(--faint); pointer-events: none; }
+  .search kbd {
+    position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+    font-family: var(--mono); font-size: 11px; color: var(--faint);
+    border: 1px solid var(--line); border-radius: 4px; padding: 1px 5px; background: var(--bg);
+  }
+  .sortsel {
+    font-family: var(--mono); font-size: 12.5px; color: var(--ink);
+    background: var(--surface); border: 1px solid var(--line); border-radius: 8px;
+    padding: 9px 11px; box-shadow: var(--shadow); cursor: pointer;
+  }
+  .count { font-family: var(--mono); font-size: 12.5px; color: var(--muted); white-space: nowrap; }
+
+  /* ---------- тонкие тематические скроллбары (вместо системных «как в старом Windows») ---------- */
+  * { scrollbar-width: thin; scrollbar-color: var(--line) transparent; }
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb {
+    background: var(--line); border-radius: 999px;
+    border: 3px solid transparent; background-clip: padding-box;
+  }
+  ::-webkit-scrollbar-thumb:hover { background: var(--faint); background-clip: padding-box; }
+  ::-webkit-scrollbar-corner { background: transparent; }
+
+  /* ---------- layout ---------- */
+  .layout { max-width: 1200px; margin: 0 auto; padding: 22px 22px 90px; display: grid; grid-template-columns: 246px 1fr; gap: 28px; }
+  @media (max-width: 860px) { .layout { grid-template-columns: 1fr; gap: 14px; } }
+
+  /* ---------- facet rail ---------- */
+  .rail { position: sticky; top: 128px; align-self: start; display: flex; flex-direction: column; gap: 16px; max-height: calc(100vh - 150px); overflow-y: auto; padding-right: 6px; scrollbar-color: transparent transparent; transition: scrollbar-color .2s; }
+  .rail:hover { scrollbar-color: var(--line) transparent; }
+  .rail::-webkit-scrollbar-thumb { background: transparent; }
+  .rail:hover::-webkit-scrollbar-thumb { background: var(--line); }
+  @media (max-width: 860px) {
+    .rail { position: static; max-height: none; overflow: visible; }
+    .rail-toggle { display: flex; }
+    .rail.collapsed .facet-groups { display: none; }
+  }
+  .rail-toggle { display: none; align-items: center; justify-content: space-between;
+    font-family: var(--mono); font-size: 13px; padding: 10px 12px; cursor: pointer;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 9px; box-shadow: var(--shadow); }
+  .facet-groups { display: flex; flex-direction: column; gap: 16px; }
+
+  .quick { display: flex; flex-direction: column; gap: 7px; }
+  .quick button, .reset {
+    font-family: var(--mono); font-size: 12.5px; text-align: left; cursor: pointer;
+    padding: 9px 11px; border-radius: 8px; border: 1px solid var(--line);
+    background: var(--surface); color: var(--ink); box-shadow: var(--shadow);
+    display: flex; align-items: center; gap: 8px; transition: background .12s, color .12s, border-color .12s;
+  }
+  .quick button[aria-pressed="true"] { background: var(--accent); color: #FFF7EC; border-color: var(--accent); }
+  .quick button .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); flex: none; }
+  .quick button[aria-pressed="true"] .dot { background: #FFF7EC; }
+  .reset { justify-content: center; color: var(--muted); }
+  .reset:hover { color: var(--accent); border-color: var(--accent); }
+
+  .facet h3 {
+    font-family: var(--mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--faint); margin: 0 0 8px; font-weight: 600;
+  }
+  .opt {
+    display: flex; align-items: center; gap: 9px; padding: 6px 8px; border-radius: 7px;
+    cursor: pointer; font-size: 13.5px; line-height: 1.35; color: var(--muted); user-select: none;
+  }
+  .opt:hover { color: var(--ink); background: var(--surface); }
+  .opt input { display: none; }
+  .opt .box {
+    width: 15px; height: 15px; border-radius: 4px; border: 1.5px solid var(--line);
+    flex: none; display: grid; place-items: center; background: var(--surface);
+  }
+  .opt input:checked + .box { background: var(--accent); border-color: var(--accent); }
+  .opt input:checked + .box::after { content: "✓"; color: #FFF7EC; font-size: 10px; font-weight: 700; }
+  .opt input:checked ~ .lab { color: var(--ink); font-weight: 500; }
+  .opt .lab { flex: 1; }
+  .opt .n { font-family: var(--mono); font-size: 11px; color: var(--faint); }
+  .opt .swatch { width: 9px; height: 9px; border-radius: 2px; flex: none; }
+
+  /* ---------- results ---------- */
+  .results { min-width: 0; }
+  .active-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+  .active-chips:empty { display: none; }
+  .achip {
+    font-family: var(--mono); font-size: 11.5px; padding: 4px 8px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent); border: 1px solid transparent;
+    display: inline-flex; align-items: center; gap: 6px; cursor: pointer;
+  }
+  .achip .x { font-weight: 700; opacity: .7; }
+  .achip:hover .x { opacity: 1; }
+
+  .cat { margin-bottom: 30px; scroll-margin-top: 130px; }
+  .cat-head { display: flex; align-items: baseline; gap: 11px; padding-bottom: 8px; margin-bottom: 13px; border-bottom: 1px solid var(--line); }
+  .cat-emoji { font-size: 18px; }
+  .cat-title { font-family: var(--serif); font-size: 20px; font-weight: 600; letter-spacing: -.01em; }
+  .cat-desc { color: var(--muted); font-size: 12.5px; }
+  .cat-n { margin-left: auto; font-family: var(--mono); font-size: 12px; color: var(--faint); }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)); gap: 11px; }
+
+  .card {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 11px;
+    padding: 13px 14px 11px; box-shadow: var(--shadow);
+    display: flex; flex-direction: column; gap: 7px;
+  }
+  .card.star { border-color: color-mix(in srgb, var(--accent) 40%, var(--line)); }
+  .card-top { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
+  .name { font-family: var(--mono); font-size: 13.5px; font-weight: 600; color: var(--ink); }
+  .name .cmd { color: var(--accent); }
+  .spacer { flex: 1; }
+
+  .pill {
+    font-family: var(--mono); font-size: 10px; letter-spacing: .03em; font-weight: 600;
+    padding: 2px 7px; border-radius: 999px; white-space: nowrap; display: inline-flex; align-items: center; gap: 4px;
+  }
+  .pill.claude { background: var(--accent-soft); color: var(--accent); }
+  .pill.codex  { background: var(--codex-soft); color: var(--codex); }
+  .pill.both   { background: var(--olive-soft); color: var(--olive); }
+  .pill.core   { background: var(--accent-soft); color: var(--accent); }
+  .pill.aux    { background: transparent; color: var(--faint); border: 1px solid var(--line); }
+  .pill.type   { background: transparent; color: var(--muted); border: 1px dashed var(--line); }
+  .pill.upd    { background: var(--codex-soft); color: var(--codex); cursor: help; }
+  .pill.uses   { background: transparent; color: var(--muted); border: 1px solid var(--line); font-variant-numeric: tabular-nums; }
+
+  .src .ok { color: var(--olive); font-weight: 700; }
+  .src .warn { color: #B4530980; }
+
+  .banner {
+    display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+    background: var(--codex-soft); border: 1px solid color-mix(in srgb, var(--codex) 30%, var(--line));
+    border-radius: 10px; padding: 12px 15px; margin-bottom: 16px;
+    font-size: 13.5px; color: var(--ink);
+  }
+  .banner:empty { display: none; }
+  .banner b { color: var(--codex); font-family: var(--mono); }
+  .banner .go { margin-left: auto; font-family: var(--mono); font-size: 12px; color: var(--codex); cursor: pointer; border: 1px solid var(--codex); border-radius: 7px; padding: 5px 10px; background: transparent; }
+  .banner .go + .go { margin-left: 8px; }
+  .banner .go.primary { background: var(--codex); color: #FFF; }
+  .banner .go.primary:disabled { opacity: .65; cursor: default; }
+  .banner .go:hover { background: color-mix(in srgb, var(--codex) 12%, transparent); }
+  .banner .go.primary:hover { background: color-mix(in srgb, var(--codex) 88%, #000); }
+  .banner code { font-family: var(--mono); font-size: 12px; background: var(--bg); padding: 1px 5px; border-radius: 4px; }
+  .updlog {
+    display: none; margin: 0 0 16px; padding: 12px 14px;
+    font-family: var(--mono); font-size: 12px; line-height: 1.5; color: var(--ink);
+    background: var(--surface-2); border: 1px solid var(--line); border-radius: 10px;
+    max-height: 260px; overflow: auto; white-space: pre-wrap; word-break: break-word;
+    box-shadow: var(--shadow);
+  }
+
+  .desc { font-size: 13.75px; line-height: 1.55; color: var(--ink); margin: 0; }
+  .when { font-size: 12.5px; line-height: 1.5; color: var(--muted); margin: 0; padding-top: 7px; border-top: 1px dashed var(--line); }
+  .when b { color: var(--olive); font-weight: 600; font-family: var(--mono); font-size: 10.5px; letter-spacing: .03em; }
+  .when:empty { display: none; }
+  .how { font-size: 12.5px; line-height: 1.5; color: var(--muted); margin: 3px 0 0; }
+  .how b { color: var(--accent); font-weight: 600; font-family: var(--mono); font-size: 10.5px; letter-spacing: .03em; }
+  .how:empty { display: none; }
+  .pill.upd { cursor: pointer; }
+  .pill.upd:hover { filter: brightness(0.96); }
+
+  .popover {
+    position: fixed; z-index: 60; max-width: 330px;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+    box-shadow: 0 10px 34px rgba(0,0,0,.20); padding: 15px 16px 16px;
+    font-size: 13px; color: var(--ink); line-height: 1.5;
+  }
+  .popover[hidden] { display: none; }
+  .popover h4 { margin: 0 6px 10px 0; font-family: var(--serif); font-size: 16px; font-weight: 600; }
+  .popover ol { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 7px; }
+  .popover li::marker { color: var(--accent); font-weight: 700; }
+  .popover code { font-family: var(--mono); font-size: 12px; background: var(--surface-2); padding: 1px 6px; border-radius: 5px; }
+  .popover .pclose { position: absolute; top: 9px; right: 11px; cursor: pointer; color: var(--faint); font-size: 17px; line-height: 1; border: 0; background: none; }
+  .popover .pclose:hover { color: var(--ink); }
+  .src {
+    font-family: var(--mono); font-size: 11px; color: var(--faint);
+    display: inline-flex; align-items: center; gap: 5px; text-decoration: none; margin-top: 1px;
+  }
+  a.src:hover { color: var(--accent); }
+  a.src .gh { width: 12px; height: 12px; }
+  .card-foot { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 1px; }
+  .card-foot .src { margin-top: 0; }
+  .card-foot .pill.upd { margin-left: auto; }
+
+  .empty { text-align: center; color: var(--muted); padding: 70px 0; font-family: var(--mono); display: none; }
+  footer { border-top: 1px solid var(--line); max-width: 1200px; margin: 0 auto; padding: 20px 22px 40px; color: var(--faint); font-size: 12px; font-family: var(--mono); }
+  footer b { color: var(--muted); }
+
+  mark { background: color-mix(in srgb, var(--accent) 32%, transparent); color: inherit; border-radius: 2px; padding: 0 1px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="head-inner">
+    <div class="brand">Справочник · Claude Code + Codex</div>
+    <h1>Твои скиллы и /команды</h1>
+    <p class="sub">Локальный справочник всего, что умеет твой Claude Code и Codex. Обновляется сам при установке новых скиллов. Ищи словом или сузь фасетами слева.</p>
+    <div class="search-row">
+      <label class="search">
+        <svg class="ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        <input id="q" type="search" placeholder="искать: пост, деплой, дизайн, видео, память…" autocomplete="off" spellcheck="false">
+        <kbd>/</kbd>
+      </label>
+      <select class="sortsel" id="sort" aria-label="Сортировка">
+        <option value="cat">по категориям</option>
+        <option value="uses">по вызовам ↓</option>
+        <option value="core">сначала частое</option>
+        <option value="name">А–Я</option>
+      </select>
+      <span class="count" id="count"></span>
+    </div>
+  </div>
+</header>
+
+<div class="layout">
+  <aside class="rail collapsed" id="rail">
+    <div class="rail-toggle" id="railToggle">
+      <span>⚙ Фильтры</span><span id="railCount"></span>
+    </div>
+    <div class="facet-groups">
+      <div class="quick">
+        <button id="qMine" aria-pressed="false"><span class="dot"></span>Только частое (твоё)</button>
+        <button id="qCmd" aria-pressed="false"><span class="dot"></span>Только /команды</button>
+        <a class="reset" id="reset" role="button">× сбросить всё</a>
+      </div>
+      <div class="facet" id="fStatus"></div>
+      <div class="facet" id="fPlatform"></div>
+      <div class="facet" id="fCat"></div>
+      <div class="facet" id="fSource"></div>
+    </div>
+  </aside>
+
+  <main class="results">
+    <div class="banner" id="banner"></div>
+    <div class="active-chips" id="activeChips"></div>
+    <div id="out"></div>
+    <div class="empty" id="empty">// ничего не нашлось — попробуй другое слово или сбрось фильтры</div>
+  </main>
+</div>
+
+<footer>
+  <span id="footMeta"></span> · <b>крафтовый терминал</b> · опиши задачу — скилл найдётся сам
+</footer>
+
+<script src="data/skills-data.js"></script>
+<script>
+const SK = window.SKILLS || [];
+const META = window.SKILLS_META || { counts:{}, categories:[] };
+const CATS = META.categories || [];
+const catMap = Object.fromEntries(CATS.map(c => [c.id, c]));
+const catOrder = CATS.map(c => c.id);
+
+const PLAT = {
+  claude: { lab: "Claude", cls: "claude", sw: "var(--accent)" },
+  codex:  { lab: "Codex",  cls: "codex",  sw: "var(--codex)" },
+  both:   { lab: "оба",    cls: "both",   sw: "var(--olive)" },
+};
+
+// precompute search text
+SK.forEach(s => {
+  s._t = (s.name + " " + (s.desc||"") + " " + (s.when||"") + " " + (catMap[s.cat]?.title||"") + " " + (s.source||"")).toLowerCase();
+});
+
+const state = { q:"", cats:new Set(), plats:new Set(), freq:new Set(), types:new Set(), srcs:new Set(), status:new Set(), sort:"cat" };
+const FSETS = ["cats","plats","freq","types","srcs","status"];
+
+// ---- restore from hash ----
+function loadHash(){
+  const h = new URLSearchParams(location.hash.slice(1));
+  state.q = h.get("q") || "";
+  state.sort = h.get("sort") || "cat";
+  FSETS.forEach(k=>{
+    const v = h.get(k); if(v) v.split(",").forEach(x=>state[k].add(x));
+  });
+}
+function saveHash(){
+  const h = new URLSearchParams();
+  if(state.q) h.set("q", state.q);
+  if(state.sort!=="cat") h.set("sort", state.sort);
+  FSETS.forEach(k=>{ if(state[k].size) h.set(k, [...state[k]].join(",")); });
+  const s = h.toString();
+  history.replaceState(null, "", s ? "#"+s : location.pathname);
+}
+loadHash();
+
+// ---- facet building ----
+const $ = id => document.getElementById(id);
+
+function countBy(fn){ const m={}; SK.forEach(s=>{ const k=fn(s); if(k==null)return; m[k]=(m[k]||0)+1; }); return m; }
+
+function facetGroup(el, title, key, items){
+  el.innerHTML = `<h3>${title}</h3>` + items.map(it=>`
+    <label class="opt">
+      <input type="checkbox" data-key="${key}" value="${esc(it.val)}" ${state[key].has(it.val)?"checked":""}>
+      <span class="box"></span>
+      ${it.sw?`<span class="swatch" style="background:${it.sw}"></span>`:""}
+      <span class="lab">${esc(it.lab)}</span>
+      <span class="n">${it.n}</span>
+    </label>`).join("");
+}
+
+const nUpd = SK.filter(s=>s.updatable).length;
+const nUnused = SK.filter(s=>!s.uses).length;
+const statusItems = [];
+if(nUpd) statusItems.push({ val:"upd", lab:"🔄 есть обновление", n:nUpd });
+statusItems.push({ val:"unused", lab:"ни разу не звал", n:nUnused });
+facetGroup($("fStatus"), "Статус", "status", statusItems);
+
+const platCounts = countBy(s=>s.platform);
+facetGroup($("fPlatform"), "Платформа", "plats", [
+  { val:"claude", lab:"Claude", n:platCounts.claude||0, sw:"var(--accent)" },
+  { val:"codex",  lab:"Codex",  n:platCounts.codex||0,  sw:"var(--codex)" },
+  { val:"both",   lab:"Claude + Codex", n:platCounts.both||0, sw:"var(--olive)" },
+].filter(x=>x.n));
+
+facetGroup($("fCat"), "Категория", "cats",
+  catOrder.map(id=>({ val:id, lab:(catMap[id].emoji+" "+catMap[id].title), n:SK.filter(s=>s.cat===id).length }))
+    .filter(x=>x.n)
+);
+
+const srcCounts = countBy(s=>s.source);
+facetGroup($("fSource"), "Источник", "srcs",
+  Object.entries(srcCounts).sort((a,b)=>b[1]-a[1]).map(([val,n])=>({ val, lab:val, n }))
+);
+
+// ---- filtering ----
+function passes(s){
+  if(state.q && !s._t.includes(state.q)) return false;
+  if(state.cats.size && !state.cats.has(s.cat)) return false;
+  if(state.plats.size && !state.plats.has(s.platform)) return false;
+  if(state.freq.size && !state.freq.has(s.core?"core":"aux")) return false;
+  if(state.types.size && !state.types.has(s.cmd?"cmd":"auto")) return false;
+  if(state.srcs.size && !state.srcs.has(s.source)) return false;
+  if(state.status.size){
+    if(state.status.has("upd") && !s.updatable) return false;
+    if(state.status.has("unused") && s.uses) return false;
+  }
+  return true;
+}
+
+function ghShort(url){
+  const m = url.match(/github\.com\/(.+)$/);
+  return m ? m[1] : url;
+}
+
+function cardHTML(s){
+  const p = PLAT[s.platform] || PLAT.claude;
+  const nameHtml = s.cmd ? `<span class="cmd">/</span>${esc(s.name)}` : esc(s.name);
+  const freqPill = s.core
+    ? `<span class="pill core">частое</span>`
+    : `<span class="pill aux">вспом.</span>`;
+  const usesPill = s.uses ? `<span class="pill uses" title="сколько раз ты явно вызывал скилл">↳ ${s.uses}×</span>` : "";
+  const updPill = s.updatable
+    ? `<span class="pill upd" role="button" tabindex="0" data-upd="1" data-src="${esc(s.source)}" data-name="${esc(s.name)}" title="нажми — как обновить">🔄 ${esc(s.installed||'')}→${esc(s.latest||'')}</span>`
+    : "";
+  const link = s.deeplink || s.sourceUrl;
+  const safeLink = /^https?:\/\//i.test(link || "") ? link : "";  // только http(s), не javascript: и т.п.
+  const check = s.linkOk === true ? ` <span class="ok" title="ссылка проверена">✓</span>` : "";
+  const gh = `<svg class="gh" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38v-1.3c-2.23.49-2.7-1.08-2.7-1.08-.36-.92-.89-1.17-.89-1.17-.73-.5.05-.49.05-.49.8.06 1.23.83 1.23.83.72 1.23 1.87.87 2.33.67.07-.52.28-.87.5-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.83-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.52.56.83 1.28.83 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>`;
+  const src = safeLink
+    ? `<a class="src" href="${esc(safeLink)}" target="_blank" rel="noopener">${gh}${esc(ghShort(s.sourceUrl||safeLink))}${check}</a>`
+    : `<span class="src">◦ ${esc(s.source||"локальное")}</span>`;
+  return `<article class="card${s.core?' star':''}" data-name="${esc(s.name)}">
+    <div class="card-top">
+      <span class="name mono">${nameHtml}</span>
+      <span class="spacer"></span>
+      ${usesPill}
+      <span class="pill ${p.cls}">${p.lab}</span>
+      ${freqPill}
+    </div>
+    <p class="desc">${esc(s.desc||"")}</p>
+    <p class="when">${s.when?`<b>КОГДА:</b> ${esc(s.when)}`:""}</p>
+    <p class="how">${s.how?`<b>КАК:</b> ${esc(s.how)}`:""}</p>
+    <div class="card-foot">${src}${updPill}</div>
+  </article>`;
+}
+
+function esc(t){ return String(t).replace(/[&<>"]/g, c=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;" }[c])); }
+
+function render(){
+  const list = SK.filter(passes);
+  const out = $("out");
+  if(!list.length){ out.innerHTML=""; $("empty").style.display="block"; }
+  else $("empty").style.display="none";
+
+  if(state.sort==="cat"){
+    const groups = {};
+    list.forEach(s=>{ (groups[s.cat]=groups[s.cat]||[]).push(s); });
+    out.innerHTML = catOrder.filter(id=>groups[id]).map(id=>{
+      const c = catMap[id];
+      const cards = groups[id].sort((a,b)=>(b.core-a.core)||a.name.localeCompare(b.name)).map(cardHTML).join("");
+      return `<section class="cat" id="cat-${id}">
+        <div class="cat-head"><span class="cat-emoji">${c.emoji}</span>
+          <span class="cat-title">${esc(c.title)}</span>
+          <span class="cat-desc">— ${esc(c.desc)}</span>
+          <span class="cat-n">${groups[id].length}</span></div>
+        <div class="grid">${cards}</div></section>`;
+    }).join("");
+  } else {
+    const cmp = {
+      core: (a,b)=>(b.core-a.core)||a.name.localeCompare(b.name),
+      uses: (a,b)=>(b.uses-a.uses)||a.name.localeCompare(b.name),
+      name: (a,b)=>a.name.localeCompare(b.name),
+    }[state.sort] || ((a,b)=>a.name.localeCompare(b.name));
+    out.innerHTML = `<div class="grid">${[...list].sort(cmp).map(cardHTML).join("")}</div>`;
+  }
+
+  if(state.q) highlightAll();
+  updateCount(list.length);
+  renderActiveChips();
+  renderBanner();
+  syncControls();
+  saveHash();
+}
+
+function renderBanner(){
+  const b = $("banner");
+  if(!META.hasUpdates || !nUpd){ b.innerHTML=""; return; }
+  if(!window.LIVE && state.status.has("upd")){ b.innerHTML=""; return; }
+  const hint = window.LIVE
+    ? `<span>🔄 Доступно обновлений: <b>${nUpd}</b>. Нажми «Обновить всё» — подтяну git-обновления (gstack + витрины) и пересоберу каталог прямо сейчас.</span>`
+    : `<span>🔄 Доступно обновлений: <b>${nUpd}</b>. Кнопка работает, только если открыть гид через локальный сервер: <code>./serve.sh</code>. Иначе — команда <code>./update-skills.sh --apply</code> или просто попроси меня.</span>`;
+  const updBtn = window.LIVE ? `<button class="go primary" id="updAll">🔄 Обновить всё</button>` : "";
+  b.innerHTML = hint + `<button class="go" id="showUpd">показать →</button>` + updBtn;
+  $("showUpd").onclick = ()=>{ state.status.add("upd"); render(); };
+  if(window.LIVE){ const u=$("updAll"); if(u) u.onclick = doUpdate; }
+}
+
+function ensureLogPanel(){
+  let p = document.getElementById("updlog");
+  if(!p){
+    p = document.createElement("pre");
+    p.id = "updlog"; p.className = "updlog";
+    $("banner").insertAdjacentElement("afterend", p);  // сибling — переживает перерисовку баннера
+  }
+  p.style.display = "block";
+  return p;
+}
+function appendLog(panel, lines){
+  panel.textContent += lines.join("\n") + "\n";
+  panel.scrollTop = panel.scrollHeight;
+}
+
+async function doUpdate(){
+  const btn = $("updAll");
+  if(btn){ btn.disabled = true; btn.textContent = "⏳ обновляю…"; }
+  const panel = ensureLogPanel();
+  panel.textContent = "";
+  appendLog(panel, ["Запускаю обновление…"]);
+  let since = 0, done = false;
+  try {
+    const start = await (await fetch("/api/update", { method:"POST", headers:{ "X-SG-Token": window.SG_TOKEN } })).json();
+    if(start && start.running) appendLog(panel, ["(обновление уже идёт — показываю его лог)"]);
+    while(!done){
+      await new Promise(r => setTimeout(r, 700));
+      const d = await (await fetch("/api/update-log?since=" + since)).json();
+      if(d.lines && d.lines.length){ appendLog(panel, d.lines); since = d.total; }
+      done = d.done;
+      if(done){
+        if(d.ok){
+          appendLog(panel, ["", "✓ Готово. Обновляю страницу через пару секунд…"]);
+          setTimeout(() => location.reload(), 1800);
+        } else {
+          appendLog(panel, ["", "⚠ Завершилось с ошибкой — смотри лог выше."]);
+          if(btn){ btn.disabled = false; btn.textContent = "🔄 Обновить всё"; }
+        }
+      }
+    }
+  } catch(e){
+    appendLog(panel, ["сеть недоступна: " + e]);
+    if(btn){ btn.disabled = false; btn.textContent = "🔄 Обновить всё"; }
+  }
+}
+
+function updateCount(n){
+  const total = SK.length;
+  $("count").textContent = n===total ? `${total} скиллов` : `найдено: ${n} / ${total}`;
+  const nf = countActive();
+  $("railCount").textContent = nf ? `${nf} акт.` : "";
+}
+function countActive(){ return FSETS.reduce((n,k)=>n+state[k].size,0)+(state.q?1:0); }
+
+function renderActiveChips(){
+  const chips = [];
+  if(state.q) chips.push({k:"q", v:"", lab:`поиск: "${state.q}"`});
+  const add=(set,key,fmt)=>set.forEach(v=>chips.push({k:key,v,lab:fmt(v)}));
+  add(state.cats,"cats",v=>catMap[v]?.title||v);
+  add(state.plats,"plats",v=>PLAT[v]?.lab||v);
+  add(state.freq,"freq",v=>v==="core"?"частое":"вспомогательное");
+  add(state.types,"types",v=>v==="cmd"?"/команда":"авто");
+  add(state.srcs,"srcs",v=>v);
+  add(state.status,"status",v=>v==="upd"?"есть обновление":"ни разу не звал");
+  $("activeChips").innerHTML = chips.map(c=>
+    `<span class="achip" data-k="${c.k}" data-v="${esc(c.v)}">${esc(c.lab)} <span class="x">×</span></span>`).join("");
+}
+
+function syncControls(){
+  document.querySelectorAll('.opt input').forEach(inp=>{
+    inp.checked = state[inp.dataset.key].has(inp.value);
+  });
+  $("qMine").setAttribute("aria-pressed", state.freq.has("core") && state.freq.size===1);
+  $("qCmd").setAttribute("aria-pressed", state.types.has("cmd") && state.types.size===1);
+  $("q").value = state.q;
+  $("sort").value = state.sort;
+}
+
+// ---- highlight ----
+function highlightAll(){
+  const q = state.q;
+  document.querySelectorAll('.card .name, .card .desc, .card .when').forEach(el=>{
+    walk(el, q);
+  });
+}
+function walk(node, q){
+  node.childNodes.forEach(ch=>{
+    if(ch.nodeType===3){
+      const i = ch.nodeValue.toLowerCase().indexOf(q);
+      if(i>=0){
+        const span=document.createElement('span');
+        span.innerHTML = esc(ch.nodeValue.slice(0,i))+'<mark>'+esc(ch.nodeValue.slice(i,i+q.length))+'</mark>'+esc(ch.nodeValue.slice(i+q.length));
+        ch.replaceWith(...span.childNodes);
+      }
+    } else if(ch.nodeType===1 && ch.tagName!=="MARK"){ walk(ch,q); }
+  });
+}
+
+// ---- events ----
+$("q").addEventListener("input", e=>{ state.q=e.target.value.trim().toLowerCase(); render(); });
+$("sort").addEventListener("change", e=>{ state.sort=e.target.value; render(); });
+document.querySelectorAll('.opt input').forEach(inp=>{
+  inp.addEventListener("change", ()=>{
+    const set = state[inp.dataset.key];
+    inp.checked ? set.add(inp.value) : set.delete(inp.value);
+    render();
+  });
+});
+$("qMine").addEventListener("click", ()=>{
+  const on = $("qMine").getAttribute("aria-pressed")==="true";
+  state.freq.clear(); if(!on) state.freq.add("core"); render();
+});
+$("qCmd").addEventListener("click", ()=>{
+  const on = $("qCmd").getAttribute("aria-pressed")==="true";
+  state.types.clear(); if(!on) state.types.add("cmd"); render();
+});
+$("reset").addEventListener("click", ()=>{
+  state.q=""; FSETS.forEach(k=>state[k].clear()); render();
+});
+$("activeChips").addEventListener("click", e=>{
+  const chip = e.target.closest(".achip"); if(!chip) return;
+  const k=chip.dataset.k, v=chip.dataset.v;
+  if(k==="q") state.q=""; else state[k].delete(v);
+  render();
+});
+$("railToggle").addEventListener("click", ()=> $("rail").classList.toggle("collapsed"));
+document.addEventListener("keydown", e=>{
+  if(e.key==="/" && document.activeElement!==$("q")){ e.preventDefault(); $("q").focus(); }
+  if(e.key==="Escape" && document.activeElement===$("q")){ state.q=""; $("q").blur(); render(); }
+});
+
+$("footMeta").innerHTML = `<b>${SK.length}</b> скиллов · <b>${META.counts?.core||0}</b> частых · Claude <b>${META.counts?.claude||0}</b> · Codex <b>${META.counts?.codex||0}</b> · оба <b>${META.counts?.both||0}</b>`
+  + (nUpd?` · 🔄 <b>${nUpd}</b> к обновлению`:"");
+
+// ---- всплывающая инструкция «как обновить» ----
+function updateSteps(src){
+  if(src === "gstack"){
+    return { title:"Как обновить gstack", steps:[
+      window.LIVE ? "Нажми <b>«Обновить всё»</b> в баннере — подтянет gstack сам"
+                  : "Открой гид через <code>./serve.sh</code> и нажми <b>«Обновить всё»</b>",
+      "Или в терминале: <code>git -C ~/.claude/skills/gstack pull</code>",
+      "Или запусти скилл <code>/gstack-upgrade</code> в Claude Code"
+    ]};
+  }
+  return { title:"Как обновить плагин «"+src+"»", steps:[
+    "Открой <b>Claude Code</b> (интерактивный терминал)",
+    "Набери команду <code>/plugin</code>",
+    "Найди в списке <b>"+esc(src)+"</b> → нажми <b>Update</b>",
+    "Плагины обновляет сам Claude — сервер гида в них не лезет намеренно"
+  ]};
+}
+let _pop;
+function ensurePopover(){
+  if(_pop) return _pop;
+  _pop = document.createElement("div");
+  _pop.className = "popover"; _pop.hidden = true;
+  document.body.appendChild(_pop);
+  return _pop;
+}
+function showUpdatePopover(el, name, src){
+  const p = ensurePopover();
+  const info = updateSteps(src);
+  p.innerHTML = `<button class="pclose" aria-label="закрыть">×</button>`
+    + `<h4>${esc(info.title)}</h4><ol>${info.steps.map(s=>`<li>${s}</li>`).join("")}</ol>`;
+  p.hidden = false;
+  const r = el.getBoundingClientRect();
+  const pw = Math.min(330, window.innerWidth - 20);
+  let left = Math.max(12, Math.min(r.left, window.innerWidth - pw - 12));
+  p.style.left = left + "px";
+  p.style.top = (r.bottom + 8) + "px";
+  requestAnimationFrame(()=>{
+    const ph = p.offsetHeight;
+    if(r.bottom + 8 + ph > window.innerHeight - 12) p.style.top = Math.max(12, r.top - ph - 8) + "px";
+  });
+  p.querySelector(".pclose").onclick = closePopover;
+}
+function closePopover(){ if(_pop) _pop.hidden = true; }
+document.addEventListener("click", e=>{
+  const pill = e.target.closest(".pill.upd");
+  if(pill){ showUpdatePopover(pill, pill.dataset.name, pill.dataset.src); e.stopPropagation(); return; }
+  if(_pop && !_pop.hidden && !e.target.closest(".popover")) closePopover();
+});
+document.addEventListener("keydown", e=>{ if(e.key === "Escape") closePopover(); });
+
+// «Живой режим»: если гид открыт через ./serve.sh — кнопка «Обновить всё» заработает
+window.LIVE = false; window.SG_TOKEN = "";
+fetch("/api/ping").then(r=>r.ok?r.json():null).then(d=>{ if(d&&d.ok){ window.LIVE=true; window.SG_TOKEN=d.token||""; renderBanner(); } }).catch(()=>{});
+
+render();
+</script>
+</body>
+</html>

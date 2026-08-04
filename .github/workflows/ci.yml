@@ -1,0 +1,35 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Синтаксис Python (py_compile)
+        run: python -m py_compile scripts/*.py serve.py
+
+      - name: Линт — только реальные ошибки (синтаксис, неопределённые имена)
+        run: |
+          pip install ruff
+          ruff check --select E9,F82 scripts serve.py
+
+      - name: Валидация курируемых данных
+        run: python scripts/validate.py
+
+      - name: Страж приватности — генерируемые/личные файлы не должны быть в репо
+        run: |
+          BAD=$(git ls-files | grep -E 'data/(skills-data\.js|usage\.json|updates\.json)|assets/favicon\.uri' || true)
+          if [ -n "$BAD" ]; then
+            echo "❌ В индексе есть машинно-зависимые/личные файлы:"; echo "$BAD"; exit 1
+          fi
+          echo "✓ Личных/генерируемых файлов в репо нет"
