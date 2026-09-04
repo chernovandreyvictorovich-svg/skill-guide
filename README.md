@@ -1,6 +1,6 @@
 # Skill-Guide 🗂️
 
-[![CI](https://github.com/Ntmib/skill-guide/actions/workflows/ci.yml/badge.svg)](https://github.com/Ntmib/skill-guide/actions/workflows/ci.yml)
+[![CI](https://github.com/mcdenil-skills/skill-guide/actions/workflows/ci.yml/badge.svg)](https://github.com/mcdenil-skills/skill-guide/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-informational.svg)](LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
@@ -25,7 +25,7 @@
 их скиллы — без них каталог будет пустым).
 
 ```bash
-git clone https://github.com/Ntmib/skill-guide.git
+git clone https://github.com/mcdenil-skills/skill-guide.git
 cd skill-guide
 ./update.sh                      # сканирует твои скиллы → data/skills-data.js
 open index.html                  # macOS; или открой файл в браузере вручную

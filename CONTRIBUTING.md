@@ -7,7 +7,7 @@
 ## Быстрый старт
 
 ```bash
-git clone https://github.com/Ntmib/skill-guide.git
+git clone https://github.com/mcdenil-skills/skill-guide.git
 cd skill-guide
 python3 scripts/validate.py   # проверить, что данные валидны
 ```
