@@ -61,7 +61,7 @@ def load_marketplaces() -> dict:
     """marketplace_id -> github url (репозиторий самой витрины)"""
     out = {}
     try:
-        data = json.loads(MARKETPLACES_JSON.read_text())
+        data = json.loads(MARKETPLACES_JSON.read_text(encoding="utf-8"))
         for mid, entry in data.items():
             src = entry.get("source", {})
             out[mid] = norm_git_url(src.get("url") or src.get("repo") or "")
@@ -74,7 +74,7 @@ def load_installed() -> dict:
     """(marketplace, plugin) -> {version, sha}"""
     out = {}
     try:
-        d = json.loads(INSTALLED_JSON.read_text()).get("plugins", {})
+        d = json.loads(INSTALLED_JSON.read_text(encoding="utf-8")).get("plugins", {})
         for key, v in d.items():
             if "@" not in key:
                 continue
@@ -93,10 +93,10 @@ def load_catalog(markets: dict) -> dict:
     """(marketplace, plugin) -> {url, deeplink, ref, sha}  (настоящий источник плагина)"""
     out = {}
     for f in glob.glob(str(PLUGIN_MARKETS / "*" / ".claude-plugin" / "marketplace.json")):
-        mp = f.split("/marketplaces/")[1].split("/")[0]
+        mp = f.replace("\\", "/").split("/marketplaces/")[1].split("/")[0]
         mp_url = markets.get(mp, "")
         try:
-            d = json.loads(Path(f).read_text())
+            d = json.loads(Path(f).read_text(encoding="utf-8"))
         except Exception:
             continue
         for p in d.get("plugins", []):
@@ -235,13 +235,13 @@ def build():
     disk = collect_disk_skills()
     plugins = collect_plugin_skills(markets, catalog, installed)
 
-    overrides_raw = json.loads(OVERRIDES_PATH.read_text()) if OVERRIDES_PATH.exists() else {}
+    overrides_raw = json.loads(OVERRIDES_PATH.read_text(encoding="utf-8")) if OVERRIDES_PATH.exists() else {}
     categories = overrides_raw.get("categories", [])
     overrides = overrides_raw.get("skills", {})
 
-    updates = json.loads(UPDATES_PATH.read_text()) if UPDATES_PATH.exists() else {}
-    usage = json.loads(USAGE_PATH.read_text()) if USAGE_PATH.exists() else {}
-    links = (json.loads(LINKS_PATH.read_text()).get("urls", {}) if LINKS_PATH.exists() else {})
+    updates = json.loads(UPDATES_PATH.read_text(encoding="utf-8")) if UPDATES_PATH.exists() else {}
+    usage = json.loads(USAGE_PATH.read_text(encoding="utf-8")) if USAGE_PATH.exists() else {}
+    links = (json.loads(LINKS_PATH.read_text(encoding="utf-8")).get("urls", {}) if LINKS_PATH.exists() else {})
 
     skills = {}
 
@@ -347,7 +347,7 @@ def build():
         f"window.SKILLS = {json.dumps(result, ensure_ascii=False, indent=1)};\n"
         f"window.SKILLS_META = {json.dumps(meta, ensure_ascii=False, indent=1)};\n"
     )
-    OUT_PATH.write_text(payload)
+    OUT_PATH.write_text(payload, encoding="utf-8")
 
     print(f"[ok] скиллов: {counts['total']}  (claude {counts['claude']} · codex {counts['codex']} · оба {counts['both']})")
     extra = []
