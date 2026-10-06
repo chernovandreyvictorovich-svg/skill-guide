@@ -120,7 +120,7 @@ def load_catalog(markets: dict) -> dict:
 
 def parse_frontmatter(path: Path) -> dict:
     try:
-        text = path.read_text(errors="replace")
+        text = path.read_text(encoding="utf-8", errors="replace")
     except Exception:
         return {}
     if not text.startswith("---"):

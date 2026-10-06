@@ -56,7 +56,7 @@ def _run_stream(cmd):
 
 def updatable_count():
     try:
-        js = (ROOT / "data" / "skills-data.js").read_text()
+        js = (ROOT / "data" / "skills-data.js").read_text(encoding="utf-8")
         m = re.search(r"window\.SKILLS_META = (\{.*?\});", js, re.S)
         if m:
             return json.loads(m.group(1)).get("counts", {}).get("updatable", 0)
